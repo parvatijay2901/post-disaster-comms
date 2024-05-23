@@ -21,3 +21,22 @@ There are some infrastructure tools that are needed to run supabase in the serve
 4. Helm: Helm is the package manager for kubernetes. To install helm, follow the instructions in the [official documentation](https://helm.sh/docs/intro/install/).
 
 5. Stern: Stern is a tool for tailing multiple pods on kubernetes. To install stern, follow the instructions in the [official documentation](https://github.com/stern/stern?tab=readme-ov-file#installation).
+
+## Supabase Setup
+
+Supabase is an open source Firebase alternative. It is a service that provides a Postgres database with a RESTful API and real-time capabilities. It is used as the backend for the project.
+
+For this project, we will be utilizing the community supabase kubernetes helm chart.
+The helm chart can be found in [supabase-community/supabase-kubernetes](https://github.com/supabase-community/supabase-kubernetes).
+
+Deploying supabase via Kubernetes allows for a cloud agnostic deployment as long as a Kubernetes cluster is available.
+
+See [Official Documentation](https://supabase.com/docs)
+
+## Flutter
+
+Flutter is an open-source UI software development kit created by Google.
+
+This will be used for the mobile application development.
+
+See [Official Documentation](https://flutter.dev/docs)
