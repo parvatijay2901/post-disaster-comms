@@ -40,3 +40,13 @@ Flutter is an open-source UI software development kit created by Google.
 This will be used for the mobile application development.
 
 See [Official Documentation](https://flutter.dev/docs)
+
+## Contributing
+
+You can contribute to this project by creating issues or forking this repository and opening a pull request.
+
+Please review our [Code of Conduct](./CODE_OF_CONDUCT.md) before contributing.
+
+## License
+
+[BSD 3-Clause License](./LICENSE)
