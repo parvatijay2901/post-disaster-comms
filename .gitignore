@@ -3,3 +3,10 @@
 
 # MacOS
 .DS_Store
+
+# Pixi
+.pixi
+*.egg-info
+
+# Flutter
+.flutter
