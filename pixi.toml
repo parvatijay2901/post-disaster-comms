@@ -10,12 +10,40 @@ platforms = ["linux-64", "osx-64", "osx-arm64"]
 python = ">=3.10"
 ipykernel = ">=6.29.5,<6.30"
 rich = ">=13.7.1,<13.8"
+ruby = ">=3.3.3,<3.4"
+curl = ">=8.8.0,<8.9"
 
 [tasks]
+setup = { depends-on = ["install-k3d", "install-flutter"] }
+
+# K3D Tasks
+[tasks.install-k3d]
+cmd = "curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash"
+outputs = ["$CONDA_PREFIX/bin/k3d"]
+
+[tasks.install-k3d.env]
+K3D_INSTALL_DIR = "$CONDA_PREFIX/bin"
+USE_SUDO = "false"
+
+# Flutter tasks
+[tasks.flutter-run]
+cmd = "flutter run"
+cwd = "src/support_sphere"
+depends-on = ["flutter-devices", "flutter-get"]
+
+[tasks.flutter-get]
+cmd = "flutter pub get"
+cwd = "src/support_sphere"
+depends-on = ["check-flutter"]
+
+[tasks.flutter-devices]
+cmd = "flutter devices"
+cwd = "src/support_sphere"
+depends-on = ["check-flutter"]
 
 [tasks.install-flutter]
 cmd = "python scripts/install-flutter.py"
-outputs = [".flutter/flutter"]
+outputs = [".app/flutter"]
 
 [tasks.check-flutter]
 cmd = "flutter doctor"

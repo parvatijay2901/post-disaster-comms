@@ -8,5 +8,5 @@
 .pixi
 *.egg-info
 
-# Flutter
-.flutter
+# App deps
+.app

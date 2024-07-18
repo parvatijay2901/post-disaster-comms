@@ -12,8 +12,8 @@ from rich import print
 CONDA_PREFIX = Path(os.environ.get('CONDA_PREFIX'))
 PIXI_PROJECT_ROOT = Path(os.environ.get('PIXI_PROJECT_ROOT'))
 
-# Setup the flutter directory
-FLUTTER_DIR = PIXI_PROJECT_ROOT / '.flutter'
+# Setup the app directory
+APP_DIR = PIXI_PROJECT_ROOT / '.app'
 
 SYSTEM_MAP = {
     'Linux': 'linux',
@@ -33,7 +33,7 @@ MANIFEST_URL = f"{MANIFEST_BASE_URL}/{MANIFEST_JSON_PATH}"
 # Bin directory destination
 destination = (CONDA_PREFIX / "bin").resolve()
 if not (destination / "flutter").exists():
-    FLUTTER_DIR.mkdir()
+    APP_DIR.mkdir(exist_ok=True)
     # Get the latest stable release
     print(f"1) Fetching latest stable release from {MANIFEST_URL}")
     with urllib.request.urlopen(MANIFEST_URL) as url:
@@ -61,14 +61,14 @@ if not (destination / "flutter").exists():
         if filename.endswith('.zip'):
             import zipfile
             with zipfile.ZipFile(path, 'r') as zip_ref:
-                zip_ref.extractall(FLUTTER_DIR)
+                zip_ref.extractall(APP_DIR)
         
         # Remove the downloaded file
         Path.unlink(path)
 
     print("3) Setting up flutter")
     # Create a symlink to the flutter directory
-    source = (FLUTTER_DIR / "flutter" / "bin").resolve()
+    source = (APP_DIR / "flutter" / "bin").resolve()
 
     # Make all the files executable
     subprocess.Popen(["chmod", "-L", "-R", "+x", str(source)])
