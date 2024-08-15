@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:support_sphere/auth/login/login.dart';
-import 'package:support_sphere/auth/register/register.dart';
-import 'package:support_sphere/components/icon_logo.dart';
-import 'package:support_sphere/utils/string_catalog.dart';
-import 'package:support_sphere/utils/constants.dart';
+import 'package:support_sphere/presentation/components/icon_logo.dart';
+import 'package:support_sphere/constants/string_catalog.dart';
+import 'package:support_sphere/constants/color.dart';
+import 'package:support_sphere/constants/routes.dart';
 
 class Landing extends StatefulWidget {
   const Landing({Key? key}) : super(key: key);
@@ -51,11 +50,7 @@ class _LandingState extends State<Landing> {
                   ),
                   onPressed: () {
                     print("Login clicked");
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const Login(),
-                      ),
-                    );
+                    Navigator.of(context).pushNamed(AppRoutes.login);
                   },
                 ),
               ),
