@@ -1,3 +1,4 @@
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
@@ -41,22 +42,46 @@ class LoginForm extends StatelessWidget {
   }
 }
 
+/// Function to validate the form fields
+/// 
+/// Takes in a list of [validators], the input [value],
+/// and build [context] containing [LoginCubit] as arguments.
+/// It will return the error message if the value is invalid
+/// and null if the value is valid.
+/// Also, it will set the [LoginState.isValid] flag based on
+/// the validity of the value.
+String? validateValue(List<FormFieldValidator<String?>> validators,
+    String? value, BuildContext context) {
+  Function validate = FormBuilderValidators.compose(validators);
+  String? validateResult = validate(value);
+  if (validateResult != null) {
+    context.read<LoginCubit>().setInvalid();
+    return validateResult;
+  }
+  context.read<LoginCubit>().setValid();
+  return null;
+}
+
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginCubit, LoginState>(
-      buildWhen: (previous, current) => previous.email != current.email || previous.status != current.status,
+      buildWhen: (previous, current) =>
+          previous.email != current.email || previous.status != current.status,
       builder: (context, state) {
         return TextFormField(
           enabled: !state.status.isInProgress,
           key: const Key('loginForm_emailInput_textFormField'),
           onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) => validateValue([
+            FormBuilderValidators.required(),
+            FormBuilderValidators.email(),
+          ], value, context),
           decoration: InputDecoration(
             labelText: LoginStrings.email,
             helperText: '',
-            errorText:
-                state.email.displayError != null ? ErrorMessageStrings.invalidEmail : null,
             border: border(context),
             enabledBorder: border(context),
             focusedBorder: focusBorder(context),
@@ -87,11 +112,14 @@ class _PasswordInput extends StatelessWidget {
           onChanged: (password) =>
               context.read<LoginCubit>().passwordChanged(password),
           obscureText: !state.showPassword,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: (value) => validateValue([
+            FormBuilderValidators.required(),
+            FormBuilderValidators.minLength(8),
+          ], value, context),
           decoration: InputDecoration(
             labelText: LoginStrings.password,
             helperText: '',
-            errorText:
-                state.password.displayError != null ? ErrorMessageStrings.invalidPassword : null,
             border: border(context),
             enabledBorder: border(context),
             focusedBorder: focusBorder(context),
@@ -127,27 +155,29 @@ class _LoginButton extends StatelessWidget {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
-          onPressed: state.isValid ? () => context.read<LoginCubit>().logInWithCredentials() : null,
-          style: ButtonStyle(
-            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-            ),
-            backgroundColor: WidgetStateProperty.all<Color>(
-              Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          // highlightElevation: 4.0,
-          child: const Text(
-            LoginStrings.login,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        );
+                onPressed: state.isValid
+                    ? () => context.read<LoginCubit>().logInWithCredentials()
+                    : null,
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40.0),
+                    ),
+                  ),
+                  backgroundColor: WidgetStateProperty.all<Color>(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                // highlightElevation: 4.0,
+                child: const Text(
+                  LoginStrings.login,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              );
       },
     );
   }
