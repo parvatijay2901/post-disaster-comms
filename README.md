@@ -47,6 +47,7 @@ To run this app locally, follow these steps:
    ```console
    pixi run -e backend setup-infra
    ```
+   After the setup, when prompted to log in, enter your Supabase project credentials (Username and Password) for successful authentication. The credentials can be found in `deployment/values.dev.yaml`.
 
 3. Optional: If you want to add sample entries in your local Supabase Instance. 
    Run the following command in a new terminal session.
@@ -86,9 +87,12 @@ To run this app locally, follow these steps:
 
 4. Run Flutter. This will open the Android app in a new Chrome window
    
+   To ensure the app connects to Supabase, set the `SUPABASE_URL` and `SUPABASE_ANON_KEY` with:
+
    ```console
-   pixi run -e frontend flutter-run
+   pixi run -e frontend flutter-run --dart-define=SUPABASE_ANON_KEY=secret.jwt.anonKeyValue --dart-define=SUPABASE_URL=http://localhost
    ```
+   The credentials can be found in `deployment/values.dev.yaml`.
 
    At this point your frontend is now ready to go! You are all set.
 
