@@ -20,7 +20,7 @@ final class LoginState extends Equatable {
   final String? errorMessage;
 
   @override
-  List<Object?> get props => [email, password, status, isValid, errorMessage, showPassword];
+  List<Object?> get props => [email, password, status, isValid, isAllFieldsFilled, errorMessage, showPassword];
 
   LoginState copyWith({
     String? email,
@@ -40,10 +40,5 @@ final class LoginState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       showPassword: showPassword ?? this.showPassword,
     );
-  }
-  
-  // Check if all fields are filled
-  bool checkAllFieldsFilled() {
-    return email.isNotEmpty && password.isNotEmpty;
   }
 }
