@@ -15,62 +15,42 @@ class SignupCubit extends Cubit<SignupState> {
   final UserRepository _userRepository;
 
   void firstNameChanged(String value) {
-    emit(
-      state.copyWith(
-        givenName: value,
-        isAllFieldsFilled: state.copyWith(givenName: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(givenName: value));
   }
 
   void lastNameChanged(String value) {
-    emit(
-      state.copyWith(
-        familyName: value,
-        isAllFieldsFilled: state.copyWith(familyName: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(familyName: value));
   }
 
   void emailChanged(String value) {
-    emit(
-      state.copyWith(
-        email: value,
-        isAllFieldsFilled: state.copyWith(email: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(email: value));    
   }
 
   void passwordChanged(String value) {
-    emit(
-      state.copyWith(
-        password: value,
-        isAllFieldsFilled: state.copyWith(password: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(password: value));
   }
 
   void signupCodeChanged(String value) {
-    emit(
-      state.copyWith(
-        signupCode: value,
-        isAllFieldsFilled: state.copyWith(signupCode: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(signupCode: value));
   }
 
   void confirmedPasswordChanged(String value) {
-    emit(
-      state.copyWith(
-        confirmedPassword: value,
-        isAllFieldsFilled: state.copyWith(confirmedPassword: value).checkAllFieldsFilled(),
-      ),
-    );
+    emit(state.copyWith(confirmedPassword: value));
   }
 
   void toggleShowPassword() => changeShowPassword(emit, state);
   void setValid() => emit(state.copyWith(isValid: true));
   void setInvalid() => emit(state.copyWith(isValid: false));
+
+  void validateAllFieldsFilled() {
+    bool isAllFieldsFilled = state.givenName.isNotEmpty &&
+                            state.familyName.isNotEmpty &&
+                            state.email.isNotEmpty &&
+                            state.password.isNotEmpty &&
+                            state.confirmedPassword.isNotEmpty &&
+                            state.signupCode.isNotEmpty;
+    emit(state.copyWith(isAllFieldsFilled: isAllFieldsFilled));
+}
 
   /// Sign up with email and password.
   Future<void> signUpWithEmailAndPassword() async {

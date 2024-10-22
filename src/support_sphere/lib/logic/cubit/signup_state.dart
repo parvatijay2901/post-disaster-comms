@@ -69,14 +69,4 @@ class SignupState extends Equatable {
       showPassword: showPassword ?? this.showPassword,
     );
   }
-
-  // Check if all fields are filled
-  bool checkAllFieldsFilled() {
-    return givenName.isNotEmpty &&
-        familyName.isNotEmpty &&
-        email.isNotEmpty &&
-        password.isNotEmpty &&
-        confirmedPassword.isNotEmpty &&
-        signupCode.isNotEmpty;
-  }
 }
