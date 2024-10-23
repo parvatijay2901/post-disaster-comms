@@ -7,6 +7,7 @@ import 'package:formz/formz.dart';
 import 'package:support_sphere/constants/string_catalog.dart';
 import 'package:support_sphere/logic/cubit/signup_cubit.dart';
 import 'package:support_sphere/presentation/components/auth/borders.dart';
+import 'package:support_sphere/utils/form_validation.dart';
 
 class SignupForm extends StatelessWidget {
   const SignupForm({super.key});
@@ -59,26 +60,6 @@ class SignupForm extends StatelessWidget {
   }
 }
 
-/// Function to validate the form fields
-///
-/// Takes in a list of [validators], the input [value],
-/// and build [context] containing [SignupCubit] as arguments.
-/// It will return the error message if the value is invalid
-/// and null if the value is valid.
-/// Also, it will set the [SignupState.isValid] flag based on
-/// the validity of the value.
-String? validateValue(List<FormFieldValidator<String?>> validators,
-    String? value, BuildContext context) {
-  Function validate = FormBuilderValidators.compose(validators);
-  String? validateResult = validate(value);
-  if (validateResult != null) {
-    context.read<SignupCubit>().setInvalid();
-    return validateResult;
-  }
-  context.read<SignupCubit>().setValid();
-  return null;
-}
-
 class _FirstNameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -92,7 +73,7 @@ class _FirstNameInput extends StatelessWidget {
           onChanged: (value) =>
               context.read<SignupCubit>().firstNameChanged(value),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.firstName()
@@ -131,7 +112,7 @@ class _LastNameInput extends StatelessWidget {
           onChanged: (value) =>
               context.read<SignupCubit>().lastNameChanged(value),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.lastName()
@@ -170,7 +151,7 @@ class _EmailInput extends StatelessWidget {
           onChanged: (email) => context.read<SignupCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.email(),
@@ -211,7 +192,7 @@ class _SignupCodeInput extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           /// Checks input for Signup code to be length of 7 characters
           /// and uppercase value
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.equalLength(7),
@@ -258,7 +239,7 @@ class _PasswordInput extends StatelessWidget {
           /// Checks input for password to have minimum character length of 8
           /// at least 1 uppercase, 1 lowercase, 1 number, and 1 special character
           /// see docs: https://pub.dev/documentation/form_builder_validators/latest/form_builder_validators/PasswordValidator-class.html
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.password(
@@ -314,7 +295,7 @@ class _ConfirmedPasswordInput extends StatelessWidget {
               context.read<SignupCubit>().confirmedPasswordChanged(password),
           obscureText: !state.showPassword,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue(
+          validator: (value) => validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               /// Validates that the confirmed password matches
