@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:support_sphere/constants/string_catalog.dart';
 import 'package:support_sphere/logic/cubit/login_cubit.dart';
 import 'package:support_sphere/presentation/components/auth/borders.dart';
+import 'package:support_sphere/utils/form_validation.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -42,26 +43,6 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-/// Function to validate the form fields
-/// 
-/// Takes in a list of [validators], the input [value],
-/// and build [context] containing [LoginCubit] as arguments.
-/// It will return the error message if the value is invalid
-/// and null if the value is valid.
-/// Also, it will set the [LoginState.isValid] flag based on
-/// the validity of the value.
-String? validateValue(List<FormFieldValidator<String?>> validators,
-    String? value, BuildContext context) {
-  Function validate = FormBuilderValidators.compose(validators);
-  String? validateResult = validate(value);
-  if (validateResult != null) {
-    context.read<LoginCubit>().setInvalid();
-    return validateResult;
-  }
-  context.read<LoginCubit>().setValid();
-  return null;
-}
-
 class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -75,10 +56,13 @@ class _EmailInput extends StatelessWidget {
           onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue([
+          validator: (value) => validateValue<LoginCubit>([
             FormBuilderValidators.required(),
             FormBuilderValidators.email(),
-          ], value, context),
+          ], 
+          value, 
+          context,
+          ),
           decoration: InputDecoration(
             labelText: LoginStrings.email,
             helperText: '',
@@ -113,10 +97,13 @@ class _PasswordInput extends StatelessWidget {
               context.read<LoginCubit>().passwordChanged(password),
           obscureText: !state.showPassword,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue([
+          validator: (value) => validateValue<LoginCubit>([
             FormBuilderValidators.required(),
             FormBuilderValidators.minLength(8),
-          ], value, context),
+          ], 
+          value,
+          context, 
+          ),
           decoration: InputDecoration(
             labelText: LoginStrings.password,
             helperText: '',
