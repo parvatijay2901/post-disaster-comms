@@ -146,7 +146,7 @@ class _LoginButton extends StatelessWidget {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
-                onPressed: state.isValid
+                onPressed: state.isValid && state.isAllFieldsFilled
                     ? () => context.read<LoginCubit>().logInWithCredentials()
                     : null,
                 style: ButtonStyle(

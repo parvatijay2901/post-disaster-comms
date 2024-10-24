@@ -342,7 +342,7 @@ class _SignupButton extends StatelessWidget {
     return BlocBuilder<SignupCubit, SignupState>(
       builder: (context, state) {
         return ElevatedButton(
-          onPressed: state.isValid
+          onPressed: state.isValid && state.isAllFieldsFilled
               ? () => context.read<SignupCubit>().signUpWithEmailAndPassword()
               : null,
           style: ButtonStyle(
