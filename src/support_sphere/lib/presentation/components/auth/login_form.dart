@@ -19,6 +19,7 @@ class LoginForm extends StatelessWidget {
             previous.password != current.password ||
             previous.status != current.status,
       listener: (context, state) {
+        context.read<LoginCubit>().setValid();
         context.read<LoginCubit>().validateAllFieldsFilled();
         if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -60,13 +61,20 @@ class _EmailInput extends StatelessWidget {
           onChanged: (email) => context.read<LoginCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<LoginCubit>([
-            FormBuilderValidators.required(),
-            FormBuilderValidators.email(),
-          ], 
-          value, 
-          context,
-          ),
+          validator: (value) {
+            final validateResult = validateValue<LoginCubit>(
+            [
+              FormBuilderValidators.required(),
+              FormBuilderValidators.email(),
+            ],
+            value,
+            context,
+          );
+          if (validateResult != null) {
+            context.read<LoginCubit>().setInvalid();  
+          }
+          },
+
           decoration: InputDecoration(
             labelText: LoginStrings.email,
             helperText: '',
@@ -101,13 +109,20 @@ class _PasswordInput extends StatelessWidget {
               context.read<LoginCubit>().passwordChanged(password),
           obscureText: !state.showPassword,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<LoginCubit>([
-            FormBuilderValidators.required(),
-            FormBuilderValidators.minLength(8),
-          ], 
-          value,
-          context, 
-          ),
+          validator: (value) {
+            final validateResult = validateValue<LoginCubit>(
+            [
+              FormBuilderValidators.required(),
+              FormBuilderValidators.minLength(8),
+            ],
+            value,
+            context,
+          );
+          if (validateResult != null) {
+            context.read<LoginCubit>().setInvalid();  
+          }
+          },
+
           decoration: InputDecoration(
             labelText: LoginStrings.password,
             helperText: '',
@@ -146,7 +161,7 @@ class _LoginButton extends StatelessWidget {
         return state.status.isInProgress
             ? const CircularProgressIndicator()
             : ElevatedButton(
-                onPressed: state.isValid && state.isAllFieldsFilled
+                onPressed: context.read<LoginCubit>().isLoginButtonEnabled()
                     ? () => context.read<LoginCubit>().logInWithCredentials()
                     : null,
                 style: ButtonStyle(
@@ -156,7 +171,7 @@ class _LoginButton extends StatelessWidget {
                     ),
                   ),
                   backgroundColor: WidgetStateProperty.all<Color>(
-                    (state.isAllFieldsFilled && state.isValid)
+                    (context.read<LoginCubit>().isLoginButtonEnabled())
                         ? Theme.of(context).colorScheme.primary
                         : Colors.grey,
                   ),

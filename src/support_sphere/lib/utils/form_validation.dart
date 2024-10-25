@@ -23,10 +23,8 @@ String? validateValue<T extends ValidatableCubit>(
   String? validateResult = validate(value);
 
   if (validateResult != null) {
-    cubit.setInvalid();
     return validateResult;
   }
 
-  cubit.setValid();
   return null;
 }

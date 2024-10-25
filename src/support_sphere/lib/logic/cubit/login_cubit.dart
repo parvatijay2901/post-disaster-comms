@@ -20,11 +20,13 @@ class LoginCubit extends Cubit<LoginState> implements ValidatableCubit {
     emit(state.copyWith(password: value));
   }
 
+  void toggleShowPassword() => changeShowPassword(emit, state);
+
   void setValid() => emit(state.copyWith(isValid: true));
   void setInvalid() => emit(state.copyWith(isValid: false));
 
-  void toggleShowPassword() {
-    changeShowPassword(emit, state);
+  bool isLoginButtonEnabled() {
+    return state.isValid && state.isAllFieldsFilled;
   }
 
   void validateAllFieldsFilled() {
@@ -33,7 +35,7 @@ class LoginCubit extends Cubit<LoginState> implements ValidatableCubit {
 }
 
   Future<void> logInWithCredentials() async {
-    if (!state.isValid) return;
+    if (!state.isValid && !state.isAllFieldsFilled) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
       await _authenticationRepository.logIn(

@@ -24,6 +24,7 @@ class SignupForm extends StatelessWidget {
             previous.signupCode != current.signupCode ||
             previous.status != current.status,
       listener: (context, state) {
+        context.read<SignupCubit>().setValid();
         context.read<SignupCubit>().validateAllFieldsFilled();
         if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -73,14 +74,19 @@ class _FirstNameInput extends StatelessWidget {
           onChanged: (value) =>
               context.read<SignupCubit>().firstNameChanged(value),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.firstName()
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.givenName,
             helperText: '',
@@ -112,14 +118,19 @@ class _LastNameInput extends StatelessWidget {
           onChanged: (value) =>
               context.read<SignupCubit>().lastNameChanged(value),
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.lastName()
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.familyName,
             helperText: '',
@@ -151,14 +162,19 @@ class _EmailInput extends StatelessWidget {
           onChanged: (email) => context.read<SignupCubit>().emailChanged(email),
           keyboardType: TextInputType.emailAddress,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.email(),
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.email,
             helperText: '',
@@ -192,7 +208,8 @@ class _SignupCodeInput extends StatelessWidget {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           /// Checks input for Signup code to be length of 7 characters
           /// and uppercase value
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.equalLength(7),
@@ -200,7 +217,11 @@ class _SignupCodeInput extends StatelessWidget {
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.signUpCode,
             helperText: '',
@@ -239,7 +260,8 @@ class _PasswordInput extends StatelessWidget {
           /// Checks input for password to have minimum character length of 8
           /// at least 1 uppercase, 1 lowercase, 1 number, and 1 special character
           /// see docs: https://pub.dev/documentation/form_builder_validators/latest/form_builder_validators/PasswordValidator-class.html
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               FormBuilderValidators.password(
@@ -248,7 +270,11 @@ class _PasswordInput extends StatelessWidget {
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.password,
             helperText: '',
@@ -295,7 +321,8 @@ class _ConfirmedPasswordInput extends StatelessWidget {
               context.read<SignupCubit>().confirmedPasswordChanged(password),
           obscureText: !state.showPassword,
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          validator: (value) => validateValue<SignupCubit>(
+          validator: (value) {
+            final validateResult = validateValue<SignupCubit>(
             [
               FormBuilderValidators.required(),
               /// Validates that the confirmed password matches
@@ -305,7 +332,11 @@ class _ConfirmedPasswordInput extends StatelessWidget {
             ],
             value,
             context,
-          ),
+          );
+          if (validateResult != null) {
+            context.read<SignupCubit>().setInvalid();  
+          }
+          },
           decoration: InputDecoration(
             labelText: LoginStrings.confirmPassword,
             helperText: '',
@@ -342,7 +373,7 @@ class _SignupButton extends StatelessWidget {
     return BlocBuilder<SignupCubit, SignupState>(
       builder: (context, state) {
         return ElevatedButton(
-          onPressed: state.isValid && state.isAllFieldsFilled
+          onPressed: context.read<SignupCubit>().isSignupButtonEnabled()
               ? () => context.read<SignupCubit>().signUpWithEmailAndPassword()
               : null,
           style: ButtonStyle(
@@ -352,7 +383,7 @@ class _SignupButton extends StatelessWidget {
               ),
             ),
             backgroundColor: WidgetStateProperty.all<Color>(
-              (state.isAllFieldsFilled && state.isValid)
+              (context.read<SignupCubit>().isSignupButtonEnabled())
                   ? Theme.of(context).colorScheme.primary
                   : Colors.grey,
             ),

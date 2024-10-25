@@ -40,8 +40,13 @@ class SignupCubit extends Cubit<SignupState> implements ValidatableCubit {
   }
 
   void toggleShowPassword() => changeShowPassword(emit, state);
+
   void setValid() => emit(state.copyWith(isValid: true));
   void setInvalid() => emit(state.copyWith(isValid: false));
+
+  bool isSignupButtonEnabled() {
+    return state.isValid && state.isAllFieldsFilled;
+  }
 
   void validateAllFieldsFilled() {
     bool isAllFieldsFilled = state.givenName.isNotEmpty &&
@@ -56,7 +61,7 @@ class SignupCubit extends Cubit<SignupState> implements ValidatableCubit {
   /// Sign up with email and password.
   Future<void> signUpWithEmailAndPassword() async {
     // If the form is invalid, do nothing
-    if (!state.isValid) return;
+    if (!state.isValid && !state.isAllFieldsFilled) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
       // TODO: Add coupon code check for signup
