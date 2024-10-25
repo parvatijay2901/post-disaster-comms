@@ -81,6 +81,7 @@ class _EmailInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<LoginCubit>().setInvalid();  
           }
+          return validateResult;
           },
 
           decoration: InputDecoration(
@@ -129,6 +130,7 @@ class _PasswordInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<LoginCubit>().setInvalid();  
           }
+          return validateResult;
           },
 
           decoration: InputDecoration(

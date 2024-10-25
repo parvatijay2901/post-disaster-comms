@@ -94,6 +94,7 @@ class _FirstNameInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.givenName,
@@ -138,6 +139,7 @@ class _LastNameInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.familyName,
@@ -182,6 +184,7 @@ class _EmailInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.email,
@@ -229,6 +232,7 @@ class _SignupCodeInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.signUpCode,
@@ -283,6 +287,7 @@ class _PasswordInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.password,
@@ -346,6 +351,7 @@ class _ConfirmedPasswordInput extends StatelessWidget {
           if (validateResult != null) {
             context.read<SignupCubit>().setInvalid();  
           }
+          return validateResult;
           },
           decoration: InputDecoration(
             labelText: LoginStrings.confirmPassword,
