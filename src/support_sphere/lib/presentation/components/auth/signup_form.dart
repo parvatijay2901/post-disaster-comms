@@ -254,6 +254,7 @@ class _PasswordInput extends StatelessWidget {
     return BlocBuilder<SignupCubit, SignupState>(
       buildWhen: (previous, current) =>
           previous.password != current.password ||
+          previous.confirmedPassword != current.confirmedPassword ||
           previous.showPassword != current.showPassword ||
           previous.status != current.status,
       builder: (context, state) {
@@ -319,6 +320,7 @@ class _ConfirmedPasswordInput extends StatelessWidget {
     return BlocBuilder<SignupCubit, SignupState>(
       buildWhen: (previous, current) =>
           previous.confirmedPassword != current.confirmedPassword ||
+          previous.password != current.password ||
           previous.showPassword != current.showPassword ||
           previous.status != current.status,
       builder: (context, state) {
