@@ -14,28 +14,36 @@ class SignupForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SignupCubit, SignupState>(
-      listenWhen: (previous, current) => 
-            previous.givenName != current.givenName ||
-            previous.familyName != current.familyName ||
-            previous.email != current.email ||
-            previous.password != current.password ||
-            previous.confirmedPassword != current.confirmedPassword ||
-            previous.signupCode != current.signupCode ||
-            previous.status != current.status,
-      listener: (context, state) {
-        context.read<SignupCubit>().setValid();
-        context.read<SignupCubit>().validateAllFieldsFilled();
-        if (state.status.isFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Signup Failure'),
-              ),
-            );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<SignupCubit, SignupState>(
+          listenWhen: (previous, current) =>
+              previous.givenName != current.givenName ||
+              previous.familyName != current.familyName ||
+              previous.email != current.email ||
+              previous.password != current.password ||
+              previous.confirmedPassword != current.confirmedPassword ||
+              previous.signupCode != current.signupCode,
+          listener: (context, state) {
+            context.read<SignupCubit>().setValid();
+            context.read<SignupCubit>().validateAllFieldsFilled();
+          },
+        ),
+        BlocListener<SignupCubit, SignupState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status.isFailure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Signup Failure'),
+                  ),
+                );
+            }
+          },
+        ),
+      ],
       child: Form(
         child: Column(
           mainAxisSize: MainAxisSize.min,

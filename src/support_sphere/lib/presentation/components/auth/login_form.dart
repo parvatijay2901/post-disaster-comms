@@ -13,24 +13,32 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
-      listenWhen: (previous, current) => 
-            previous.email != current.email ||
-            previous.password != current.password ||
-            previous.status != current.status,
-      listener: (context, state) {
-        context.read<LoginCubit>().setValid();
-        context.read<LoginCubit>().validateAllFieldsFilled();
-        if (state.status.isFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Authentication Failure'),
-              ),
-            );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginCubit, LoginState>(
+          listenWhen: (previous, current) => 
+              previous.email != current.email ||
+              previous.password != current.password,
+          listener: (context, state) {
+            context.read<LoginCubit>().setValid();
+            context.read<LoginCubit>().validateAllFieldsFilled();
+          },
+        ),
+        BlocListener<LoginCubit, LoginState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status.isFailure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Authentication Failure'),
+                  ),
+                );
+            }
+          },
+        ),
+      ],
       child: Form(
         child: Column(
           mainAxisSize: MainAxisSize.min,
